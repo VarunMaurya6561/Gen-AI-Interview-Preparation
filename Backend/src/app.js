@@ -1,0 +1,24 @@
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
+
+
+const app = express()
+app.use(express.json())
+app.use(cookieParser())
+app.use(cors({
+    origin:'http://localhost:5173',
+    // origin:'https://zvr5jj9x-5173.inc1.devtunnels.ms',
+    credentials:true
+}))
+
+/* require all the routes*/
+const authRouter = require('./routes/auth.routes')
+const interviewRouter = require('./routes/interview.routes')
+
+/* using all routes here */
+app.use('/api/auth', authRouter)
+app.use('/api/interview', interviewRouter)
+
+
+module.exports = app

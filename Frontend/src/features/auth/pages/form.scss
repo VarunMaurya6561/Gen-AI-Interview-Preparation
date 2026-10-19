@@ -1,0 +1,418 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+// ─── Design System ──────────────────────────────────────────────
+
+$bg-page: #0b0d14;
+$bg-card: #11141e;
+$bg-panel: #171b29;
+$bg-hover: #1e2333;
+$border-color: #292e40;
+
+$text-primary: #f2f4fa;
+$text-secondary: #b2b8cb;
+$text-muted: #858ca3;
+
+$accent: #ff4f91;
+$accent-light: #ff83b1;
+$purple: #a78bfa;
+
+$font-body: 'DM Sans', sans-serif;
+$font-heading: 'Space Grotesk', sans-serif;
+
+$radius-md: 16px;
+$radius-lg: 22px;
+
+$shadow-card: 0 20px 60px rgba(0, 0, 0, 0.32);
+
+// ─── Registration / Authentication Page ─────────────────────────
+
+main {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    overflow: hidden;
+
+    color: $text-primary;
+    font-family: $font-body;
+
+    background:
+        radial-gradient(
+            ellipse at 12% 5%,
+            rgba($accent, 0.09),
+            transparent 38%
+        ),
+        radial-gradient(
+            ellipse at 92% 90%,
+            rgba($purple, 0.09),
+            transparent 38%
+        ),
+        $bg-page;
+
+    // Subtle ambient glow
+
+    &::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: -180px;
+        left: 50%;
+        width: 480px;
+        height: 480px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: rgba($accent, 0.045);
+        filter: blur(100px);
+        pointer-events: none;
+    }
+
+    // ─── Form Card ──────────────────────────────────────────────
+
+    .container {
+        position: relative;
+        width: 100%;
+        max-width: 440px;
+        padding: 42px 38px 34px;
+        overflow: hidden;
+
+        background: rgba($bg-card, 0.96);
+        border: 1px solid $border-color;
+        border-radius: $radius-lg;
+        box-shadow: $shadow-card;
+
+        animation: form-enter 0.45s ease both;
+
+        // Decorative top accent
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 12%;
+            right: 12%;
+            height: 2px;
+            border-radius: 0 0 8px 8px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                $accent,
+                $purple,
+                transparent
+            );
+        }
+
+        // ─── Heading ───────────────────────────────────────────
+
+        h1 {
+            margin: 0 0 32px;
+            color: $text-primary;
+            font-family: $font-heading;
+            font-size: clamp(1.9rem, 5vw, 2.3rem);
+            font-weight: 700;
+            letter-spacing: -0.055em;
+            line-height: 1.2;
+            text-align: center;
+
+            &::after {
+                content: '';
+                display: block;
+                width: 42px;
+                height: 3px;
+                margin: 15px auto 0;
+                border-radius: 10px;
+                background: linear-gradient(
+                    90deg,
+                    $accent,
+                    $purple
+                );
+            }
+        }
+
+        // ─── Form Layout ───────────────────────────────────────
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            width: 100%;
+        }
+
+        // ─── Input Groups ──────────────────────────────────────
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+
+            label {
+                color: $text-secondary;
+                font-size: 0.84rem;
+                font-weight: 600;
+                letter-spacing: 0.01em;
+                transition: color 0.2s ease;
+            }
+
+            input {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                min-height: 49px;
+                padding: 13px 15px;
+
+                color: $text-primary;
+                font-family: $font-body;
+                font-size: 0.9rem;
+                font-weight: 500;
+
+                background: $bg-panel;
+                border: 1px solid $border-color;
+                border-radius: 11px;
+                outline: none;
+
+                transition:
+                    border-color 0.2s ease,
+                    background 0.2s ease,
+                    box-shadow 0.2s ease;
+
+                &::placeholder {
+                    color: $text-muted;
+                    font-weight: 400;
+                    opacity: 0.85;
+                }
+
+                &:hover {
+                    border-color: #41475f;
+                }
+
+                &:focus {
+                    background: #191d2c;
+                    border-color: $accent;
+                    box-shadow: 0 0 0 3px rgba($accent, 0.12);
+                }
+
+                &:focus-visible {
+                    outline: none;
+                }
+
+                // Keep browser autofill consistent with dark theme
+
+                &:-webkit-autofill,
+                &:-webkit-autofill:hover,
+                &:-webkit-autofill:focus {
+                    -webkit-text-fill-color: $text-primary;
+                    -webkit-box-shadow: 0 0 0 1000px $bg-panel inset;
+                    caret-color: $text-primary;
+                    transition: background-color 9999s ease-in-out 0s;
+                }
+            }
+
+            &:focus-within {
+                label {
+                    color: $accent-light;
+                }
+            }
+        }
+
+        // ─── Primary Button ────────────────────────────────────
+
+        .button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 49px;
+            margin-top: 3px;
+            padding: 13px 18px;
+
+            color: #ffffff;
+            font-family: $font-body;
+            font-size: 0.93rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 11px;
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                filter 0.2s ease;
+
+            &:focus-visible {
+                outline: 2px solid $accent-light;
+                outline-offset: 4px;
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+        }
+
+        .primary-button {
+            background: linear-gradient(
+                115deg,
+                #f43f83,
+                #d946a5
+            );
+
+            box-shadow: 0 7px 20px rgba($accent, 0.16);
+
+            &:hover:not(:disabled) {
+                transform: translateY(-2px);
+                filter: brightness(1.06);
+                box-shadow: 0 11px 28px rgba($accent, 0.25);
+            }
+
+            &:active:not(:disabled) {
+                transform: translateY(0);
+                box-shadow: 0 4px 12px rgba($accent, 0.15);
+            }
+        }
+
+        // ─── Login Link / Footer ───────────────────────────────
+
+        p {
+            margin: 2px 0 0;
+            color: $text-muted;
+            font-size: 0.84rem;
+            line-height: 1.8;
+            text-align: center;
+
+            a {
+                display: inline-block;
+                margin-left: 3px;
+                color: $accent-light;
+                font-weight: 700;
+                text-decoration: none;
+                text-underline-offset: 4px;
+                transition:
+                    color 0.2s ease,
+                    text-decoration-color 0.2s ease;
+
+                &:hover {
+                    color: #ffb0cd;
+                    text-decoration: underline;
+                }
+
+                &:focus-visible {
+                    border-radius: 3px;
+                    outline: 2px solid $accent;
+                    outline-offset: 4px;
+                }
+            }
+        }
+    }
+}
+
+// ─── Loading State ──────────────────────────────────────────────
+
+main > h1 {
+    color: $text-primary;
+    font-family: $font-heading;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    font-weight: 600;
+    text-align: center;
+
+    &::after {
+        content: '';
+        display: block;
+        width: 42px;
+        height: 3px;
+        margin: 20px auto 0;
+        border-radius: 10px;
+        background: linear-gradient(90deg, $accent, $purple);
+        animation: loading-pulse 1.2s ease-in-out infinite alternate;
+    }
+}
+
+// ─── Animations ─────────────────────────────────────────────────
+
+@keyframes form-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes loading-pulse {
+    from {
+        opacity: 0.35;
+        transform: scaleX(0.55);
+    }
+
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+// ─── Responsive Design ─────────────────────────────────────────
+
+@media (max-width: 480px) {
+    main {
+        padding: 22px 15px;
+
+        .container {
+            max-width: 100%;
+            padding: 34px 23px 28px;
+            border-radius: 18px;
+
+            h1 {
+                margin-bottom: 27px;
+                font-size: 1.9rem;
+            }
+
+            form {
+                gap: 19px;
+            }
+
+            .input-group input {
+                min-height: 47px;
+                padding: 12px 13px;
+                font-size: 16px;
+            }
+
+            .button {
+                min-height: 47px;
+            }
+
+            p {
+                font-size: 0.8rem;
+            }
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    main .container {
+        animation: none;
+    }
+
+    main .container *,
+    main .container *::before,
+    main .container *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

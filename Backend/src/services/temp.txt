@@ -1,0 +1,59 @@
+const { GoogleGenAI } = require('@google/genai')
+const { z } = require('zod')
+const { zodToJsonSchema } = require('zod-to-json-schema')
+
+
+
+
+const ai = new GoogleGenAI({
+    apiKey: process.env.GOOGLE_GENAI_API_KEY
+})
+
+const interviewReportSchema_Z = z.object({
+    matchScore : z.number().describe(" The match score between the candidate and the job description, indicating how well the candidate's skills and experience align with the requirements of the job."),
+
+    technicalQuestions: z.array(z.object({
+        questions: z.string().describe('The technical question asked during the interview'),
+        intention: z.string().describe('The intention behind the technical question'),
+        answere: z.string().describe('How to answere the technical question and what points to cover in the answere')
+    })).describe('A list of technical questions asked during the interview, along with their intention and suggested answers.'),
+    behavioralQuestions: z.array(z.object({
+        questions: z.string().describe('The behavioral question asked during the interview'),
+        intention: z.string().describe('The intention behind the behavioral question'),
+        answere: z.string().describe('How to answere the behavioral question and what points to cover in the answere')
+    })).describe('A list of behavioral questions asked during the interview, along with their intention and suggested answers.'),
+
+    skillsGap: z.array(z.object({
+        skill: z.string().describe('The specific skill that the candidate needs to improve upon.'),
+        severity: z.enum(['low', 'medium', 'high']).describe('The severity level of the skills gap, indicating how critical it is for the candidate to address this gap.')
+    })).describe('A list of skills gaps identified during the interview, along with their severity levels.'),
+
+    perparationPlan: z.array(z.object({
+            day: z.number().describe('The day number in the preparation plan, indicating the sequence of the preparation steps.'),
+            tasks: z.array(z.string()).describe('A list of tasks or activities that the candidate should undertake on this specific day to improve their skills and prepare for future interviews.')
+    })).describe('A detailed preparation plan outlining the tasks and activities the candidate should follow to address their skills gaps and improve their interview performance.')
+})
+
+async function generateInterviewReport({resume, selfDescription, jobDescription}){
+
+
+    const prompt = `Generate candidate InterView report based on their :
+                    resume:${resume} ,
+                    selfDescription:${selfDescription} ,
+                    jobDescription:${jobDescription}
+                    `
+
+    const response = await ai.models.generateContent({
+        model:'gemini-3.1-flash-lite',
+        contents: prompt,
+        config:{
+                responseMimeType: 'application/json',
+                responseSchema: zodToJsonSchema(interviewReportSchema_Z)
+            }
+    })
+    
+    console.log(JSON.parse(response.text));
+
+}
+
+module.exports = generateInterviewReport

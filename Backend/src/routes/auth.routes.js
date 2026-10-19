@@ -10,6 +10,7 @@ const authMiddleware = require('../middleware/auth.middleware')
 
 authRouter.post('/register', authController.registerUser)
 
+authRouter.post('/verify-mail', authController.verifyEmail)
 /**
  * @route POST api/auth/login
  */

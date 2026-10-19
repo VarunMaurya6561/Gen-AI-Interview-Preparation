@@ -99,6 +99,9 @@ const Interview = () => {
 
     return (
         <div className='interview-page'>
+            <div className="heading">
+            <h1>AI Powered Interview Preparation</h1>
+        </div>
             <div className='interview-layout'>
 
                 {/* ── Left Nav ── */}

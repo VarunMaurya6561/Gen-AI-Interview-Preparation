@@ -46,8 +46,15 @@ const Home = () => {
   return (
     <main className="main">
 
-      <div className="home">
+      <div className="home"> 
+        <div className="header">
+        <div className="heading">
+            <h1>AI Powered Interview Preparation</h1>
+        </div>
 
+
+          
+        </div> 
         <div className="interview-input">
 
           <div className="left">
@@ -104,18 +111,18 @@ const Home = () => {
 
       <div className="reports">
             <div className="header">
-                <div className="heading">
-                    <h1>Recent Reports</h1>
-                </div>
-                
-                <div className="user-det">
-                        <div className="user-name">
-                            <p>{user}</p>
-                        </div>
-                        <div className="user-signout">
-                            <p onClick={logoutFunc}>Sign Out</p>
-                        </div>
-                </div>
+                    <div className="heading">
+                      <h1>Recent Reports</h1>
+                    </div>
+                  
+                        <div className="user-det">
+                            <div className="user-name">
+                              <p>{user}</p>
+                            </div>
+                            <div className="user-signout">
+                              <p onClick={logoutFunc}>Sign Out</p>
+                            </div>
+                      </div>
             </div>
 
 

@@ -370,21 +370,7 @@ input {
 }
 
 // ─── Recent Reports Header ──────────────────────────────────────
-.reports {
-  margin-top: 52px;
-
-  .header {
-    display: flex;
-    min-height: 76px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 22px;
-    padding: 12px 0;
-    border-top: 1px solid $border-color;
-    border-bottom: 1px solid $border-color;
-
-    .heading {
+.heading {
       min-width: 0;
       flex: 1;
 
@@ -410,6 +396,22 @@ input {
         }
       }
     }
+
+.reports {
+  margin-top: 52px;
+
+  .header {
+    display: flex;
+    min-height: 76px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+    padding: 12px 0;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+
+    
 
     .user-det {
       position: relative;

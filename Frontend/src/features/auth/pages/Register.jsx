@@ -16,7 +16,7 @@ const Register = () => {
         e.preventDefault()
         const success = await handleRegister({username, email, password})
         if(success){
-            navigate('/')                 
+            navigate('/otp')                 
         }
     }
 
@@ -55,7 +55,7 @@ const Register = () => {
                     type="password" id='password' name='password' placeholder='Create Your Password' />
                 </div>
 
-                <button className='button primary-button' > Register</button>
+                <button className='button primary-button'> Register</button>
 
                 <p>Already have an account, <Link to='/login' element={<Login/>} >login</Link> </p>
             </form>

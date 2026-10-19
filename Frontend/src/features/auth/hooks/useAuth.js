@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react"
 import { AuthContext } from "../auth.context"
-import { register, login, logout, getMe } from "../services/auth.api"
+import { register, login, logout, getMe, verifyEmail } from "../services/auth.api"
   import { toast } from 'react-toastify';
 
 
@@ -22,8 +22,7 @@ export const useAuth = () => {
             return true
 
         }catch(err){
-            toast.error(err);
-            throw err
+            toast.error(err.response.data.message);
         }finally{
             setloading(false)
         }
@@ -36,9 +35,25 @@ export const useAuth = () => {
         setloading(true)
         try {
             
-            const data = await register({username, email, password})
+            await register({username, email, password})
+            // setuser(data.user.username)
+            toast.success('OTP sent')
+            return true
+        } catch (err) {
+            toast.error(err.response.data.message);
+        }finally{
+
+            setloading(false)
+        }
+    }
+
+    const handleOtp = async(otp) => {
+        setloading(true)
+        try {
+            
+            const data = await verifyEmail(otp)
             setuser(data.user.username)
-            toast.success('User Registered')
+            toast.success('user registered')
             return true
         } catch (err) {
             toast.error(err.response.data.message);
@@ -84,6 +99,6 @@ export const useAuth = () => {
         getAndSetUser()
     }, [])
 
-    return{user, loading, handleLogin, handleRegister, handleLogout}
+    return{user, loading, handleLogin, handleRegister, handleOtp, handleLogout}
 
 }

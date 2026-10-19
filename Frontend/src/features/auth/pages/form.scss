@@ -416,3 +416,30 @@ main > h1 {
         animation-iteration-count: 1 !important;
     }
 }
+
+
+
+/* OTP page description */
+
+main {
+    .container {
+        .otp-description {
+            margin: -12px 0 24px;
+            color: $text-secondary;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        #otp {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.35em;
+        }
+
+        form p{
+            cursor: pointer;
+        }
+    }
+}

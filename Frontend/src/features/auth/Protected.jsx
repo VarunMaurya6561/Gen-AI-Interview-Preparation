@@ -8,7 +8,7 @@ const Protected = ({children}) => {
 
 
     if(loading){
-        return  <Loading/>
+        return  <main><h1>Loading.......</h1></main>
     }
 
     if(!user){

@@ -17,6 +17,19 @@ export async function register({username, email, password}){
     }
 }
 
+export async function verifyEmail(otp){
+    try{
+        const response = await api.post('/api/auth/verify-mail', {
+            otp
+        })
+        
+
+        return response.data
+    }catch(err){
+        throw err
+    }
+}
+
 
 export async function login({email, password}){
     try {

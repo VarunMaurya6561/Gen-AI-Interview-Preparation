@@ -154,7 +154,12 @@ async function verifyEmail(req, res) {
     },
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+});
 
   res.status(201).json({
     message: "new user registered",
@@ -203,7 +208,12 @@ async function loginUser(req, res) {
     },
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+});
 
   res.status(200).json({
     message: "User Logged in successfully",

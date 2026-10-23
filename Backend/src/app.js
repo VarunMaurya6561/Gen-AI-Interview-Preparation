@@ -8,7 +8,6 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
     origin:'http://localhost:5173',
-    // origin:'https://zvr5jj9x-5173.inc1.devtunnels.ms',
     credentials:true
 }))
 

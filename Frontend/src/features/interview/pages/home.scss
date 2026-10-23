@@ -468,9 +468,10 @@ input {
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.2s ease;
-
+        
         p {
-          margin: 0;
+
+          margin-right: 40px;
           color: $accent-light;
           font-size: 0.75rem;
           font-weight: 700;

@@ -2,6 +2,7 @@ import { useContext, useEffect  } from 'react'
 import { generateInterviewReport, getInterviewReportById, getAllReport ,generateResumePdf } from '../services/interview.api'
 import { InterviewContext } from '../Interview.context'
 import { useParams } from "react-router"
+import { toast } from 'react-toastify';
 
 export const useInterview = () => {
     const context = useContext(InterviewContext)
@@ -22,7 +23,7 @@ export const useInterview = () => {
             response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile })
             setreport(response?.interviewReport ?? null)
         } catch (err) {
-            console.log(err)
+            toast.error(err.response.data.message);
             setreport(null)
         } finally {
             setloading(false)
@@ -78,7 +79,8 @@ export const useInterview = () => {
             link.click()
         }
         catch (error) {
-            console.log('Server Error try after some time!');
+            console.log(error.response.data.message);
+            toast.error("PDF is not Generated, Try after some time!")
             
         } finally {
             setloading(false)

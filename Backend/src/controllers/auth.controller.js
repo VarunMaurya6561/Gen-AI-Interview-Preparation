@@ -17,6 +17,7 @@ async function registerUser(req, res) {
       .json({ message: "Please Provide username, email, password" });
   }
 
+
   await userModel.deleteMany({
     email,
     verified: false,

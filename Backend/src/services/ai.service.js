@@ -7,133 +7,6 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
 });
 
-// 1. Keep your Zod schema for validating the final output
-// const interviewReportSchema_Z = z.object({
-//     matchScore: z.number(),
-//     technicalQuestions: z.array(z.object({
-//         question: z.string(),
-//         intention: z.string(),
-//         answer: z.string()
-//     })).min(5),
-//     behavioralQuestions: z.array(z.object({
-//         question: z.string(),
-//         intention: z.string(),
-//         answer: z.string()
-//     })).min(5),
-//     skillsGap: z.array(z.object({
-//         skill: z.string(),
-//         severity: z.enum(['low', 'medium', 'high'])
-//     })).min(3),
-//     preparationPlan: z.array(z.object({
-//         day: z.number(),
-//         topic: z.array(z.string()),
-//         tasks: z.array(z.string())
-//     })).min(7),
-//     title: z.string().describe("Title of the report"),
-// });
-
-// 2. Create the Gemini-native Schema using standard Uppercase Types
-// const geminiResponseSchema = {
-//     type: Type.OBJECT,
-//     properties: {
-//         matchScore: { 
-//             type: Type.NUMBER, 
-//             description: `Calculate a realistic resume-to-job-description match score from 0 to 100. Do not use a fixed, default, or arbitrary score such as 85.
-//             Scoring guidelines:
-//             0-20: Very poor match; most essential requirements are missing.
-//             21-40: Low match; several important requirements are missing.
-//             41-60: Moderate match; some requirements are met, but significant gaps remain.
-//             61-80: Good match; most important requirements are met, with some gaps.
-//             81-95: Strong match; nearly all major requirements are supported by resume evidence.
-//             96-100: Exceptional match; almost all relevant requirements are demonstrably satisfied.` 
-//         },
-//         technicalQuestions: {
-//             type: Type.ARRAY,
-//             minItems: 5,
-//             items: {
-//                 type: Type.OBJECT,
-//                 properties: {
-//                     question: { type: Type.STRING },
-//                     intention: { type: Type.STRING },
-//                     answer: { type: Type.STRING }
-//                 },
-//                 required: ["question", "intention", "answer"]
-//             }
-//         },
-//         behavioralQuestions: {
-//             type: Type.ARRAY,
-//             minItems: 5,
-//             items: {
-//                 type: Type.OBJECT,
-//                 properties: {
-//                     question: { type: Type.STRING },
-//                     intention: { type: Type.STRING },
-//                     answer: { type: Type.STRING }
-//                 },
-//                 required: ["question", "intention", "answer"]
-//             }
-//         },
-//         skillsGap: {
-//             type: Type.ARRAY,
-//             minItems: 3,
-//             items: {
-//                 type: Type.OBJECT,
-//                 properties: {
-//                     skill: { type: Type.STRING },
-//                     severity: { type: Type.STRING, description: "Must be low, medium, or high" }
-//                 },
-//                 required: ["skill", "severity"]
-//             }
-//         },
-//         preparationPlan: {
-//             type: Type.ARRAY,
-//             minItems: 7,
-//             items: {
-//                 type: Type.OBJECT,
-//                 properties: {
-//                     day: { type: Type.NUMBER  },
-//                     topic: { 
-//                         type: Type.ARRAY, 
-//                         items: { type: Type.STRING } 
-//                     },
-//                     tasks: { 
-//                         type: Type.ARRAY, 
-//                         items: { type: Type.STRING } 
-//                     }
-//                 },
-//                 required: ["day", "tasks", "topic"]
-//             }
-//         },
-//         title: { type: Type.STRING, description: "Title of the report" }
-//     },
-//     // Ensure the model knows it must provide all these keys
-//     required: ["matchScore", "technicalQuestions", "behavioralQuestions", "skillsGap", "preparationPlan"]
-// };
-
-
-/*
-Calculate a realistic resume-to-job-description compatibility score from 0 to 100.
-
-            Evaluate:
-            - Required technical skills and tools.
-            - Relevant projects and practical experience.
-            - Educational qualifications and relevant knowledge.
-            - Job responsibilities and role-specific competencies.
-            - Evidence of required skills in the resume and self-description.
-
-            Scoring guidelines:
-            0-20: Very poor match; most essential requirements are missing.
-            21-40: Low match; several important requirements are missing.
-            41-60: Moderate match; some requirements are met, but significant gaps remain.
-            61-80: Good match; most important requirements are met, with some gaps.
-            81-95: Strong match; nearly all major requirements are supported by evidence.
-            96-100: Exceptional match; almost all relevant requirements are demonstrably satisfied.
-
-            Do not assign a fixed, default, or arbitrary score.
-            Do not assume a skill is present unless supported by the provided information.
-            Consider the importance of each job requirement rather than counting keywords alone.
-            Return only a numeric score between 0 and 100.
-*/
 
 
 const geminiResponseSchema = {
@@ -298,8 +171,7 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
 
     try {
         const response = await ai.models.generateContent({
-            // model: "gemini-3-flash-preview",
-            model: 'gemini-3.1-flash-lite', // Use the standard, reliable flash model
+            model: process.env.MODEL, // Use the standard, reliable flash model
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
@@ -329,15 +201,6 @@ async function generatePdfFromHtml(htmlContent) {
     const browser = await puppeteer.launch()
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "networkidle0" })
-
-    // const pdfBuffer = await page.pdf({
-    //     format: "A4", margin: {
-    //         top: "20mm",
-    //         bottom: "20mm",
-    //         left: "15mm",
-    //         right: "15mm"
-    //     },
-    // })
 
     
 const pdfBuffer = await page.pdf({
@@ -414,8 +277,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription}){
 
     try {
         const response = await ai.models.generateContent({
-        // model: "gemini-3-flash-preview",
-        model: "gemini-3.1-flash-lite",
+        model: process.env.MODEL,
         contents: prompt,
         config: {
             responseMimeType: "application/json",

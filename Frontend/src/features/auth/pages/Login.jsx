@@ -46,7 +46,7 @@ const Login = () => {
                     onChange={e => {
                         setpassword(e.target.value)
                     }}
-                    type="password" id='password' name='password' placeholder='Enter Your Password' />
+                    type="password" id='password' name='password' placeholder='Enter Your Password'  />
                 </div>
 
                 <button className='button primary-button' > Login</button>

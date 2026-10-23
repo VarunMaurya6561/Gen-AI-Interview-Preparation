@@ -52,7 +52,7 @@ const Register = () => {
                     onChange={e => {
                         setpassword(e.target.value)
                     }}
-                    type="password" id='password' name='password' placeholder='Create Your Password' />
+                    type='password' id='password' name='password' placeholder='Create Your Password' minLength={6} />
                 </div>
 
                 <button className='button primary-button'> Register</button>

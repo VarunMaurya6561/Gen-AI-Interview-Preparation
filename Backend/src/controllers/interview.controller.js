@@ -3,30 +3,42 @@ const pdfParse = require('pdf-parse')
 const {generateInterviewReport, generateResumePdf} = require('../services/ai.service')
 
 async function interview(req, res){
-    const resumeFile = req.file
-    const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(resumeFile.buffer))).getText()
-    const resumeText = resumeContent.text
-    
-    
-    const { selfDescription, jobDescription} = req.body
+    try{
+        const resumeFile = req.file
+        if(!resumeFile){
+            return res.status(400).json({
+                message: "Upload PDF also"
+            })
+        }
+        const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(resumeFile.buffer))).getText()
+        const resumeText = resumeContent.text
+        
+        
+        const { selfDescription, jobDescription} = req.body
 
-    const interviewReportByAi = await generateInterviewReport({resume:resumeContent, selfDescription, jobDescription})
-    
-    const interviewReport = await interviewReportModel.create({
-        user:req.user.id,
-        resume: resumeText,
-        selfDescription,
-        jobDescription,
-        ...interviewReportByAi
-    })
+        const interviewReportByAi = await generateInterviewReport({resume:resumeContent, selfDescription, jobDescription})
+        
+        const interviewReport = await interviewReportModel.create({
+            user:req.user.id,
+            resume: resumeText,
+            selfDescription,
+            jobDescription,
+            ...interviewReportByAi
+        })
 
-    // console.log(interviewReportByAi.technicalQuestions);
-    
+        
 
-    res.status(201).json({
-        message : "Interview Report Generated",
-        interviewReport
-    })
+        res.status(201).json({
+            message : "Interview Report Generated",
+            interviewReport
+        })
+    }catch(err){
+        console.log(err)
+       return res.status(400).json({
+            message:"Server is Busy Try after some time!"
+        })
+
+    }
 }
 
 
@@ -63,27 +75,33 @@ async function getAllReportsByUser(req, res){
 }
 
 async function generateResumePdfController(req, res) {
-    const { interviewId } = req.params
+   try{
+         const { interviewId } = req.params
 
-    const interviewReport = await interviewReportModel.findById(interviewId)
+        const interviewReport = await interviewReportModel.findById(interviewId)
 
-    if (!interviewReport) {
-        return res.status(404).json({
-            message: "Interview report not found."
+        if (!interviewReport) {
+            return res.status(404).json({
+                message: "Interview report not found."
+            })
+        }
+
+        const { resume, jobDescription, selfDescription } = interviewReport
+        
+
+        const pdfBuffer = await generateResumePdf({ resume, jobDescription, selfDescription })
+
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename=resume_${interviewId}.pdf`
         })
-    }
 
-    const { resume, jobDescription, selfDescription } = interviewReport
-    
-
-    const pdfBuffer = await generateResumePdf({ resume, jobDescription, selfDescription })
-
-    res.set({
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename=resume_${interviewId}.pdf`
-    })
-
-    res.send(pdfBuffer)
+        res.send(pdfBuffer)
+   }catch(err){
+        return res.status(400).json({
+            message:"PDF is not Generated, Try after some time!"
+        })
+   }
 }
 
 module.exports = {

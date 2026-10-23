@@ -88,7 +88,7 @@ export const useAuth = () => {
                 setuser(data.user.username)
                 
             } catch (error) {
-                console.log(error);
+                
                 
             }finally{
 

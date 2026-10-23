@@ -79,7 +79,7 @@ export const useInterview = () => {
             link.click()
         }
         catch (error) {
-            console.log(error.response.data.message);
+            console.log( error.response?.data?.message || error);
             toast.error("PDF is not Generated, Try after some time!")
             
         } finally {

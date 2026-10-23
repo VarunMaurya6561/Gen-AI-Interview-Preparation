@@ -98,9 +98,7 @@ async function generateResumePdfController(req, res) {
 
         res.send(pdfBuffer)
    }catch(err){
-        return res.status(400).json({
-            message:"PDF is not Generated, Try after some time!"
-        })
+        throw err
    }
 }
 

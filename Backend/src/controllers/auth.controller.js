@@ -66,7 +66,12 @@ async function registerUser(req, res) {
     },
   );
 
-  res.cookie("detail", detail);
+  res.cookie("detail", detail , {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+});
 
   res.status(201).json({
     message: "Otp Sent",

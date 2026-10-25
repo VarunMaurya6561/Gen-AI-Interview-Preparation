@@ -88,7 +88,7 @@ async function registerUser(req, res) {
 
 async function verifyEmail(req, res) {
   try {
-    const detail = req.cookies.detail;
+  const detail = req.cookies.detail;
   const { otp } = req.body;
   const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
 

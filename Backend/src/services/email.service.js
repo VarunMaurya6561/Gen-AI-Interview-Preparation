@@ -44,64 +44,26 @@
 
 
 
-import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
+import { Resend } from "resend";
 
-  auth: {
-    type: "OAuth2",
-    user: process.env.GOOGLE_USER,
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-  },
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  // Fail faster if SMTP cannot establish a connection
-  connectionTimeout: 20000,
-  greetingTimeout: 20000,
-  socketTimeout: 30000,
-});
-
-// Check SMTP connection
-export const verifyEmailConnection = async () => {
-  try {
-    await transporter.verify();
-    console.log("Email server is ready to send messages");
-    return true;
-  } catch (error) {
-    console.error("Email connection failed:", {
-      code: error.code,
-      command: error.command,
-      message: error.message,
-    });
-
-    return false;
-  }
-};
-
-// Send email
 export const sendEmail = async (to, subject, text, html) => {
-  try {
-    const info = await transporter.sendMail({
-      from: `"Gen AI Interview Platform" <${process.env.GOOGLE_USER}>`,
-      to,
-      subject,
-      text,
-      html,
-    });
+  const { data, error } = await resend.emails.send({
+    from: process.env.MAIL_FROM || "onboarding@resend.dev",
+    to: [to],
+    subject,
+    text,
+    html,
+  });
 
-    console.log("Message accepted by mail server:", info.messageId);
-
-    return info;
-  } catch (error) {
-    console.error("Error sending email:", {
-      code: error.code,
-      command: error.command,
-      message: error.message,
-    });
-
-    // Important: let the controller know the email failed
-    throw error;
+  if (error) {
+    console.error("Resend email error:", error);
+    throw new Error(error.message || "Failed to send email");
   }
+
+  console.log("Email accepted by Resend:", data.id);
+
+  return data;
 };

@@ -35,6 +35,19 @@ async function registerUser(req, res) {
     return res.status(400).json({ message: "User already exist" });
   }
 
+  
+
+  const otp = generateOtp();
+  const html = getOtpHtml(otp);
+
+  try {
+    await sendEmail(email, "OTP Verification", `Your OTP code is ${otp}`, html);
+  } catch (error) {
+    return res.status(400).json({
+      message : "Unable to send otp!"
+    })
+  }
+
   const hash = await bcrypt.hash(password, 10);
 
   const user = await userModel.create({
@@ -42,11 +55,6 @@ async function registerUser(req, res) {
     email,
     password: hash,
   });
-
-  const otp = generateOtp();
-  const html = getOtpHtml(otp);
-
-  await sendEmail(email, "OTP Verification", `Your OTP code is ${otp}`, html);
 
 
   const otpHash = crypto.createHash("sha256").update(otp).digest("hex");

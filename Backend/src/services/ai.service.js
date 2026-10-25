@@ -197,52 +197,6 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
     }
 }
 
-// async function generatePdfFromHtml(htmlContent) {
-//     const browser = await puppeteer.launch();
-
-//     try {
-//         const page = await browser.newPage();
-
-//         await page.setContent(htmlContent, {
-//             waitUntil: "networkidle0",
-//         });
-
-//         const pdfBuffer = await page.pdf({
-//             format: "A4",
-//             margin: {
-//                 top: "18mm",
-//                 bottom: "18mm",
-//                 left: "16mm",
-//                 right: "16mm",
-//             },
-//             printBackground: true,
-//             preferCSSPageSize: true,
-//             displayHeaderFooter: true,
-//             headerTemplate: `
-//                 <div style="width:100%;font-size:9px;color:#64748b;">
-//                 </div>
-//             `,
-//             footerTemplate: `
-//                 <div style="
-//                     width:100%;
-//                     font-size:9px;
-//                     color:#64748b;
-//                     padding:0 16mm;
-//                     box-sizing:border-box;
-//                 ">
-//                     <span>
-//                         Page <span class="pageNumber"></span>
-//                         of <span class="totalPages"></span>
-//                     </span>
-//                 </div>
-//             `,
-//         });
-
-//         return pdfBuffer;
-//     } finally {
-//         await browser.close();
-//     }
-// }
 
 async function generatePdfFromHtml(htmlContent) {
     let browser;

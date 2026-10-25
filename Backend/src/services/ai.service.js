@@ -244,6 +244,8 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
 //     }
 // }
 
+import puppeteer from "puppeteer";
+
 async function generatePdfFromHtml(htmlContent) {
     let browser;
 
@@ -255,11 +257,21 @@ async function generatePdfFromHtml(htmlContent) {
 
         const page = await browser.newPage();
 
+        // Allow more time for HTML rendering.
+        page.setDefaultNavigationTimeout(60000);
+
         await page.setContent(htmlContent, {
-            waitUntil: "networkidle0",
+            waitUntil: "domcontentloaded",
+            timeout: 60000,
         });
 
-        return await page.pdf({
+        // Wait for fonts, but don't let a font hang PDF generation forever.
+        await Promise.race([
+            page.evaluate(() => document.fonts.ready),
+            new Promise(resolve => setTimeout(resolve, 10000)),
+        ]);
+
+        const pdfBuffer = await page.pdf({
             format: "A4",
             margin: {
                 top: "18mm",
@@ -272,12 +284,20 @@ async function generatePdfFromHtml(htmlContent) {
             displayHeaderFooter: true,
             headerTemplate: "<div></div>",
             footerTemplate: `
-                <div style="width:100%;font-size:9px;padding:0 16mm;">
+                <div style="
+                    width:100%;
+                    font-size:9px;
+                    color:#64748b;
+                    padding:0 16mm;
+                    box-sizing:border-box;
+                ">
                     Page <span class="pageNumber"></span>
                     of <span class="totalPages"></span>
                 </div>
             `,
         });
+
+        return pdfBuffer;
     } finally {
         if (browser) {
             await browser.close();

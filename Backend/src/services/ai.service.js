@@ -197,17 +197,69 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
     }
 }
 
+// async function generatePdfFromHtml(htmlContent) {
+//     const browser = await puppeteer.launch();
+
+//     try {
+//         const page = await browser.newPage();
+
+//         await page.setContent(htmlContent, {
+//             waitUntil: "networkidle0",
+//         });
+
+//         const pdfBuffer = await page.pdf({
+//             format: "A4",
+//             margin: {
+//                 top: "18mm",
+//                 bottom: "18mm",
+//                 left: "16mm",
+//                 right: "16mm",
+//             },
+//             printBackground: true,
+//             preferCSSPageSize: true,
+//             displayHeaderFooter: true,
+//             headerTemplate: `
+//                 <div style="width:100%;font-size:9px;color:#64748b;">
+//                 </div>
+//             `,
+//             footerTemplate: `
+//                 <div style="
+//                     width:100%;
+//                     font-size:9px;
+//                     color:#64748b;
+//                     padding:0 16mm;
+//                     box-sizing:border-box;
+//                 ">
+//                     <span>
+//                         Page <span class="pageNumber"></span>
+//                         of <span class="totalPages"></span>
+//                     </span>
+//                 </div>
+//             `,
+//         });
+
+//         return pdfBuffer;
+//     } finally {
+//         await browser.close();
+//     }
+// }
+
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch();
+    let browser;
 
     try {
+        browser = await puppeteer.launch({
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
+
         const page = await browser.newPage();
 
         await page.setContent(htmlContent, {
             waitUntil: "networkidle0",
         });
 
-        const pdfBuffer = await page.pdf({
+        return await page.pdf({
             format: "A4",
             margin: {
                 top: "18mm",
@@ -218,29 +270,18 @@ async function generatePdfFromHtml(htmlContent) {
             printBackground: true,
             preferCSSPageSize: true,
             displayHeaderFooter: true,
-            headerTemplate: `
-                <div style="width:100%;font-size:9px;color:#64748b;">
-                </div>
-            `,
+            headerTemplate: "<div></div>",
             footerTemplate: `
-                <div style="
-                    width:100%;
-                    font-size:9px;
-                    color:#64748b;
-                    padding:0 16mm;
-                    box-sizing:border-box;
-                ">
-                    <span>
-                        Page <span class="pageNumber"></span>
-                        of <span class="totalPages"></span>
-                    </span>
+                <div style="width:100%;font-size:9px;padding:0 16mm;">
+                    Page <span class="pageNumber"></span>
+                    of <span class="totalPages"></span>
                 </div>
             `,
         });
-
-        return pdfBuffer;
     } finally {
-        await browser.close();
+        if (browser) {
+            await browser.close();
+        }
     }
 }
 

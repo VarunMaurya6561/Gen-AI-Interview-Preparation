@@ -244,8 +244,6 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
 //     }
 // }
 
-import puppeteer from "puppeteer";
-
 async function generatePdfFromHtml(htmlContent) {
     let browser;
 

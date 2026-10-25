@@ -198,63 +198,50 @@ async function generateInterviewReport({resume, selfDescription, jobDescription}
 }
 
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch()
-    const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: "networkidle0" })
+    const browser = await puppeteer.launch();
 
-    
-const pdfBuffer = await page.pdf({
-    format: "A4",
+    try {
+        const page = await browser.newPage();
 
-    // Page margins
-    margin: {
-        top: "18mm",
-        bottom: "18mm",
-        left: "16mm",
-        right: "16mm",
-    },
+        await page.setContent(htmlContent, {
+            waitUntil: "networkidle0",
+        });
 
-    // Visual quality
-    printBackground: true,
-    preferCSSPageSize: true,
+        const pdfBuffer = await page.pdf({
+            format: "A4",
+            margin: {
+                top: "18mm",
+                bottom: "18mm",
+                left: "16mm",
+                right: "16mm",
+            },
+            printBackground: true,
+            preferCSSPageSize: true,
+            displayHeaderFooter: true,
+            headerTemplate: `
+                <div style="width:100%;font-size:9px;color:#64748b;">
+                </div>
+            `,
+            footerTemplate: `
+                <div style="
+                    width:100%;
+                    font-size:9px;
+                    color:#64748b;
+                    padding:0 16mm;
+                    box-sizing:border-box;
+                ">
+                    <span>
+                        Page <span class="pageNumber"></span>
+                        of <span class="totalPages"></span>
+                    </span>
+                </div>
+            `,
+        });
 
-    // PDF layout
-    displayHeaderFooter: true,
-
-    // Header and footer templates
-    headerTemplate: `
-        <div style="
-            width: 100%;
-            font-size: 9px;
-            color: #64748b;
-            padding: 0 16mm;
-            box-sizing: border-box;
-        ">
-        </div>
-    `,
-
-    footerTemplate: `
-        <div style="
-            width: 100%;
-            font-size: 9px;
-            color: #64748b;
-            padding: 0 16mm;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-        ">
-            <span>
-                Page <span class="pageNumber"></span>
-                of <span class="totalPages"></span>
-            </span>
-        </div>
-    `,
-});
-
-
-    await browser.close()
-
-    return pdfBuffer
+        return pdfBuffer;
+    } finally {
+        await browser.close();
+    }
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription}){

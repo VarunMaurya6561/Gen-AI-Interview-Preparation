@@ -6,7 +6,7 @@ async function authUser(req, res, next){
     
 
     if(!token){
-        return res.status(401).json({
+        return res.json({
             message:"Token not found"
         })
     }

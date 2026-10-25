@@ -37,9 +37,9 @@ export const getOtpHtml = (otp) => {
             ${otp}
         </div>
 
-        // <p style="color: #555555; font-size: 14px;">
-        //     This OTP is valid for <strong>5 minutes</strong>.
-        // </p>
+        <p style="color: #555555; font-size: 14px;">
+            This OTP is valid for <strong>5 minutes</strong>.
+        </p>
 
         <p style="color: #777777; font-size: 13px; line-height: 1.6;">
             If you did not request this verification code, you can

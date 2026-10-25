@@ -28,11 +28,21 @@ async function registerUser(req, res) {
   });
 
   const isUserAlreadyExist = await userModel.findOne({
-    $or: [{ username }, { email }],
+    // $or: [{ username }, { email }],
+      email
   });
 
   if (isUserAlreadyExist) {
-    return res.status(400).json({ message: "User already exist" });
+    return res.status(400).json({ message: "User already exist with this email"});
+  }
+
+   const isUsernameAlreadyExist = await userModel.findOne({
+    // $or: [{ username }, { email }],
+      username
+  });
+
+  if (isUsernameAlreadyExist) {
+    return res.status(400).json({ message: "Username taken"});
   }
 
   
@@ -266,6 +276,3 @@ async function getUser(req, res) {
 
 module.exports = { registerUser, loginUser, logoutUser, getUser, verifyEmail };
 
-// 36:00
-// 1:04:00
-// 1:51:00

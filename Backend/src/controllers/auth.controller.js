@@ -162,7 +162,12 @@ async function verifyEmail(req, res) {
     verified: true,
   });
 
-  res.clearCookie("detail");
+    res.clearCookie("detail", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+});
 
   await otpModel.deleteMany({
     email: user.email,
@@ -384,7 +389,12 @@ async function resetPassVerify(req, res){
     type:'resetpass'
   })
 
-  res.clearCookie("det");
+    res.clearCookie("det", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+});
 
   res.status(201).json({
     message:"Password updated"

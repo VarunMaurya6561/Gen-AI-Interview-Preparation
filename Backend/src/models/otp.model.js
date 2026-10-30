@@ -12,6 +12,12 @@ const otpSchema = new mongoose.Schema({
     attempts: {
         type: Number,
         default: 0
+    },
+    type :{
+        type:String,
+        enum:['emailverify', 'resetpass'],
+        default: 'emailverify'
+
     }
 },{
     timestamps: true

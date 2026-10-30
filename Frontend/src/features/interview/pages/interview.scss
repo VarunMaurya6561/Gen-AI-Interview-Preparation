@@ -152,6 +152,9 @@ button {
         flex-direction: column;
         gap: 8px;
     }
+    .interview-nav__icon {
+        cursor: pointer;
+    }
 
     &__label {
         margin: 0 0 15px;
@@ -847,8 +850,7 @@ button {
     border: 1px solid rgb(184, 150, 150);
     border-radius: 48px;
     position: absolute;
-    
-    display: none;
+
     
     p{
             width: max-content;
@@ -864,10 +866,6 @@ button {
             }
     }
 }
-
-    &:hover .profile-details{
-            display: block;
-        }
 
     
 }

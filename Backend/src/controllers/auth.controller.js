@@ -3,7 +3,7 @@ const blackListModel = require("../models/blacklist.model");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { generateOtp, getOtpHtml } = require("../utils/utils");
+const { generateOtp, getOtpHtml, getResetPassHtml } = require("../utils/utils");
 const { sendEmail } = require("../services/email.service");
 const otpModel = require("../models/otp.model");
 
@@ -25,6 +25,7 @@ async function registerUser(req, res) {
 
   await otpModel.deleteMany({
     email,
+    type:'emailverify'
   });
 
   const isUserAlreadyExist = await userModel.findOne({
@@ -109,6 +110,7 @@ async function verifyEmail(req, res) {
 
   const otpDoc = await otpModel.findOne({
     email: user.email,
+    type:'emailverify'
   });
 
   if (!otpDoc) {
@@ -164,6 +166,7 @@ async function verifyEmail(req, res) {
 
   await otpModel.deleteMany({
     email: user.email,
+    type:'emailverify'
   });
 
   const token = jwt.sign(
@@ -248,6 +251,152 @@ async function loginUser(req, res) {
   });
 }
 
+async function resetPassOtp(req, res){
+  const {email} = req.body;
+  const user = await userModel.findOne({
+    email
+  })
+
+  if(!user){
+    return res.status(400).json({
+      message:"User is not found"
+    })
+  }
+
+  if(user.verified == false){
+    return res.status(400).json({
+      message:"Your Email is not Verified"
+    })
+  }
+
+  await otpModel.deleteMany({
+    email,
+    type:'resetpass'
+  })
+
+  const otp = generateOtp()
+  const html = getResetPassHtml(otp)
+
+  try {
+    await sendEmail(email, "Reset Password", `Your OTP code is ${otp}`, html);
+  } catch (error) {
+    return res.status(400).json({
+      message : "Unable to send otp!"
+    })
+  }
+
+  const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
+
+  await otpModel.create({
+    email,
+    otpHash,
+    type:'resetpass'
+  });
+
+  const det = jwt.sign({
+    email : email
+  }, 
+  process.env.JWT_SECRET,
+  {
+      expiresIn: "5m",
+  })
+
+  res.cookie('det', det, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+})
+
+res.status(200).json({
+  message:"Otp sent"
+})
+
+}
+
+async function resetPassVerify(req, res){
+  try{
+    const det = req.cookies.det
+  const { otp , password} = req.body;
+  console.log(otp, password)
+  const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
+
+  const decoded = jwt.verify(det, process.env.JWT_SECRET)
+  const otpDoc = await otpModel.findOne({
+    email: decoded.email,
+    type: 'resetpass'
+  })
+
+  if(!otpDoc){
+    return res.status(401).json({
+      message:"OTP expired or not found. Please register again."
+    })
+  }
+
+  const MAX_ATTEMPTS = 5
+
+  if (otpDoc.attempts >= MAX_ATTEMPTS) {
+    await otpModel.deleteOne({ _id: otpDoc._id });
+
+    return res.status(429).json({
+      message: "Too many attempts. Please request a new OTP.",
+    });
+  }
+
+  if (otpHash !== otpDoc.otpHash) {
+    const updatedOtp = await otpModel.findOneAndUpdate(
+      {
+        _id: otpDoc._id,
+        attempts: { $lt: MAX_ATTEMPTS },
+      },
+      {
+        $inc: { attempts: 1 },
+      },
+      {
+        returnDocument: "after",
+      },
+    );
+    if (!updatedOtp || updatedOtp.attempts >= MAX_ATTEMPTS) {
+      await otpModel.deleteOne({
+        _id: otpDoc._id,
+        attempts: { $gte: MAX_ATTEMPTS },
+      });
+
+      return res.status(429).json({
+        message: "Too many attempts. Please request a new OTP.",
+      });
+    }
+
+    return res.status(401).json({
+      message: `Incorrect OTP. ${MAX_ATTEMPTS - updatedOtp.attempts} attempts remaining.`,
+    });
+  }
+
+  const hash = await bcrypt.hash(password, 10);
+
+  await userModel.updateOne(
+        { email: decoded.email }, // Find user
+        { $set: { password: hash } } // Update value
+    );
+
+    await otpModel.deleteMany({
+    email: decoded.email,
+    type:'resetpass'
+  })
+
+  res.clearCookie("det");
+
+  res.status(201).json({
+    message:"Password updated"
+  })
+  }catch(error){
+    return res.status(401).json({
+      message: "OTP expired or not found. Please register again."
+    })
+  }
+
+}
+
 async function logoutUser(req, res) {
   const token = req.cookies.token;
 
@@ -279,5 +428,5 @@ async function getUser(req, res) {
   });
 }
 
-module.exports = { registerUser, loginUser, logoutUser, getUser, verifyEmail };
+module.exports = { registerUser, loginUser, logoutUser, getUser, verifyEmail , resetPassOtp, resetPassVerify};
 

@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react"
 import { AuthContext } from "../auth.context"
-import { register, login, logout, getMe, verifyEmail } from "../services/auth.api"
+import { register, login, logout, getMe, verifyEmail, resetPassApi , resetPassVerifyApi} from "../services/auth.api"
   import { toast } from 'react-toastify';
 
 
@@ -63,6 +63,32 @@ export const useAuth = () => {
         }
     }
 
+    const handleResetPass = async({email}) =>{
+        setloading(true)
+        try {
+            await resetPassApi({email})
+            toast.success('OTP sent')
+            return true
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }finally{
+            setloading(false)
+        }
+    }
+
+    const resetPassVerify = async({otp, password}) => {
+        setloading(true)
+        try {
+            const res = await resetPassVerifyApi({otp, password})
+            toast.success('Password updated')
+            return true
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }finally{
+            setloading(false)
+        }
+    }
+
 
     const handleLogout =async () => {
 
@@ -73,7 +99,7 @@ export const useAuth = () => {
             setuser(null)
             toast.success('Logged Out')
         } catch (error) {
-            toast.error(err.response.data.message);
+            toast.error(error.response.data.message);
         }finally{
 
             setloading(false)
@@ -99,6 +125,6 @@ export const useAuth = () => {
         getAndSetUser()
     }, [])
 
-    return{user, loading, handleLogin, handleRegister, handleOtp, handleLogout}
+    return{user, loading, handleLogin, handleRegister, handleOtp, handleLogout, handleResetPass, resetPassVerify}
 
 }

@@ -17,6 +17,8 @@ interviewRouter.get('/report/:interviewId', authMiddleware.authUser, interviewCo
 
 interviewRouter.get('/', authMiddleware.authUser, interviewController.getAllReportsByUser)
 
+interviewRouter.get('/delete/:interviewId', authMiddleware.authUser, interviewController.delReportById)
+
 interviewRouter.post('/resume/pdf/:interviewId', authMiddleware.authUser, interviewController.generateResumePdfController)
 
 module.exports = interviewRouter

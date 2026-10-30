@@ -60,8 +60,10 @@ const RoadMapDay = ({ day }) => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
+    const navigate = useNavigate()
+
     const [ activeNav, setActiveNav ] = useState('technical')
-    const { report, getReportById, loading , getResumePdf} = useInterview()
+    const { report, getReportById, loading , getResumePdf, delReportById} = useInterview()
     const { interviewId } = useParams()
 
     const context = useContext(AuthContext)
@@ -124,6 +126,12 @@ const Interview = () => {
                         className='button primary-button' >
                         Download Resume
                     </button>
+                    <p className='interview-nav__icon' onClick={async()=>{
+                        const success = await delReportById(interviewId)
+                        if(success){
+                            navigate('/')
+                        }
+                    }}>Delete this report</p>
                 </nav>
 
                 <div className='interview-divider' />

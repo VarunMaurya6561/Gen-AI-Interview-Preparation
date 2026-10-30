@@ -465,7 +465,7 @@ input {
         padding-right: 16px;
         border-radius: 48px;
         background: $bg-card;
-        opacity: 0;
+        opacity: 1;
         pointer-events: none;
         transition: opacity 0.2s ease;
         
@@ -486,7 +486,6 @@ input {
 
       &:hover .user-signout,
       &:focus-within .user-signout {
-        opacity: 1;
         pointer-events: auto;
       }
     }

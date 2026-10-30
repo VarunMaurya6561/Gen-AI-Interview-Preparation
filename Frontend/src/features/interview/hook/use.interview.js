@@ -1,12 +1,13 @@
 import { useContext, useEffect  } from 'react'
-import { generateInterviewReport, getInterviewReportById, getAllReport ,generateResumePdf } from '../services/interview.api'
+import { generateInterviewReport, getInterviewReportById, getAllReport ,generateResumePdf, delReportByIdApi } from '../services/interview.api'
 import { InterviewContext } from '../Interview.context'
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { toast } from 'react-toastify';
 
 export const useInterview = () => {
     const context = useContext(InterviewContext)
     const { interviewId } = useParams()
+    const navigate = useNavigate()
 
     if (!context) {
         throw new Error('useInterview must be used within an InterviewProvider')
@@ -42,6 +43,7 @@ export const useInterview = () => {
         } catch (err) {
             console.log(err)
             setreport(null)
+            navigate('/')
         } finally {
             setloading(false)
         }
@@ -64,6 +66,22 @@ export const useInterview = () => {
         }
 
         return response?.interviewReports ?? []
+    }
+
+    const delReportById = async (interviewId) => {
+        setloading(true)
+
+        try {
+            await delReportByIdApi(interviewId)
+            toast.success("Report Deleted")
+            return true
+        } catch (error) {
+            toast.error(error? error.response.data.message: "Report Deletion Failed")
+            return false
+        } finally {
+            setloading(false)
+        }
+
     }
 
     const getResumePdf = async (interviewId) => {
@@ -98,5 +116,5 @@ export const useInterview = () => {
         }
     }, [ interviewId ])
 
-    return { loading, report, reports, generateReport, getReportById, getAllReports, getResumePdf  }
+    return { loading, report, reports, generateReport, getReportById, getAllReports, getResumePdf ,delReportById }
 }

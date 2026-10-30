@@ -17,6 +17,9 @@ authRouter.post('/verify-mail', authController.verifyEmail)
 
 authRouter.post('/login', authController.loginUser)
 
+authRouter.post('/resetPass', authController.resetPassOtp)
+authRouter.post('/verifyPass', authController.resetPassVerify)
+
 /**
  * @route GET api/auth/logout
  */

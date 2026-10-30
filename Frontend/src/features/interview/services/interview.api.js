@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({
     baseURL:'https://gen-ai-interview-preparation.onrender.com',
+    // baseURL:'http://localhost:3000',
     withCredentials: true
 })
 
@@ -33,6 +34,12 @@ export const getAllReport = async () => {
 
     return response.data
 }   
+
+export const delReportByIdApi= async (interviewId) => {
+    const response = await api.get(`/api/interview/delete/${interviewId}`)
+
+    return response.data
+}
 
 export const generateResumePdf = async({interviewId}) =>{
     try {

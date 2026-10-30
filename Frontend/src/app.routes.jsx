@@ -5,6 +5,8 @@ import Protected from './features/auth/Protected'
 import Home from './features/interview/pages/Home'
 import Interview from './features/interview/pages/Interview'
 import OTP from './features/auth/pages/OTP'
+import ResetPass from './features/auth/pages/ResetPass'
+import VerifyPassOtp from './features/auth/pages/VerifyPassOtp'
 
 
 export const router = createBrowserRouter([
@@ -19,6 +21,14 @@ export const router = createBrowserRouter([
     {
         path: '/otp',
         element: <OTP/>
+    },
+    {
+        path: '/resetPass',
+        element: <ResetPass/>
+    },
+    {
+        path: '/verifyPassOtp',
+        element: <VerifyPassOtp/>
     },
     {
         path: '/',

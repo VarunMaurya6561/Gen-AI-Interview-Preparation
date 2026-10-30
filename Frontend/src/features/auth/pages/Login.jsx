@@ -3,6 +3,7 @@ import './form.scss'
 import Register from './Register'
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import ResetPass from './ResetPass'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -53,6 +54,7 @@ const Login = () => {
             </form>
 
             <p>New user? create account, <Link to='/register' element={<Register/>} >register</Link> </p>
+            <p><Link to='/resetPass' element={<ResetPass/>} >Forget Password?</Link></p>
         </div>
     </main>
   )

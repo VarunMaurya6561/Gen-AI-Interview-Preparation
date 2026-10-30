@@ -74,6 +74,24 @@ async function getAllReportsByUser(req, res){
     })
 }
 
+async function delReportById(req, res){
+    const { interviewId } = req.params
+
+    const report = await interviewReportModel.deleteOne({
+        _id:interviewId, user:req.user.id
+    })
+
+    if(!report){
+        return res.status(400).json({
+            message:"Report is not deleted"
+        })
+    }
+
+    res.status(200).json({
+        message:"Report deleted"
+    })
+}
+
 async function generateResumePdfController(req, res) {
    try{
          const { interviewId } = req.params
@@ -106,5 +124,6 @@ module.exports = {
     interview,
     getReportById,
     getAllReportsByUser,
-    generateResumePdfController
+    generateResumePdfController,
+    delReportById
 }

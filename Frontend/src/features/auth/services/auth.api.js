@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({
     baseURL:'https://gen-ai-interview-preparation.onrender.com',
+    // baseURL:'http://localhost:3000',
     withCredentials:true
 })
 
@@ -65,6 +66,30 @@ export async function getMe(){
     }catch(err){
         throw err
         
+    }
+}
+
+export async function resetPassApi({email}){
+    try {
+        const response = await api.post('/api/auth/resetPass', {
+            email
+        })
+    
+        return response.data
+    } catch (err) {
+        throw err
+    }
+}
+
+export async function resetPassVerifyApi({otp, password}){
+    try {
+        const response = await api.post('/api/auth/verifyPass', {
+            otp, password
+        })
+    
+        return response.data
+    } catch (err) {
+        throw err
     }
 }
 
